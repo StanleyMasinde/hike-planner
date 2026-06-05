@@ -69,6 +69,14 @@ export function formatDateTime(value: string) {
   }).format(new Date(value));
 }
 
+export function formatDate(value: string) {
+  return new Intl.DateTimeFormat("en-KE", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  }).format(new Date(value));
+}
+
 export function formatTime(value: string) {
   return new Intl.DateTimeFormat("en-KE", {
     hour: "numeric",
