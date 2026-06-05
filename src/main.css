@@ -1,0 +1,295 @@
+@import "tailwindcss";
+
+@theme {
+  --color-forest-50: #eef8f1;
+  --color-forest-100: #d7efde;
+  --color-forest-500: #2f8f58;
+  --color-forest-700: #1f6840;
+  --color-forest-900: #123723;
+  --color-clay-50: #fff3ed;
+  --color-clay-100: #ffe0d1;
+  --color-clay-500: #e46f45;
+  --color-clay-600: #c95631;
+  --color-stone-50: #f8f7f2;
+  --color-stone-100: #edebe1;
+  --color-stone-700: #49463d;
+  --color-stone-900: #232119;
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  html {
+    @apply bg-stone-50 text-stone-900;
+  }
+
+  body {
+    @apply m-0 min-h-screen font-sans antialiased;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply min-h-screen bg-[radial-gradient(circle_at_top_left,#d7efde,transparent_30%),linear-gradient(135deg,#f8f7f2_0%,#eef8f1_48%,#fff3ed_100%)] px-5 py-6 text-stone-900 sm:px-8 lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:items-center lg:gap-8 lg:px-12;
+  }
+
+  .results-shell {
+    @apply min-h-screen bg-[radial-gradient(circle_at_top_left,#d7efde,transparent_30%),linear-gradient(135deg,#f8f7f2_0%,#eef8f1_48%,#fff3ed_100%)] px-5 py-6 text-stone-900 sm:px-8 lg:px-12;
+  }
+
+  .results-header {
+    @apply mx-auto w-full max-w-6xl;
+  }
+
+  .results-header h1 {
+    @apply m-0 text-4xl font-bold leading-tight text-forest-900 sm:text-5xl;
+  }
+
+  .planner-panel {
+    @apply mx-auto w-full max-w-3xl rounded-lg border border-forest-100 bg-white/85 p-5 shadow-[0_24px_80px_rgba(18,55,35,0.12)] backdrop-blur sm:p-8;
+  }
+
+  .intro-block {
+    @apply max-w-2xl;
+  }
+
+  .eyebrow,
+  .summary-label {
+    @apply mb-3 text-xs font-bold uppercase tracking-[0.18em] text-clay-600;
+  }
+
+  .intro-block h1 {
+    @apply m-0 text-4xl font-bold leading-tight text-forest-900 sm:text-5xl;
+  }
+
+  .intro-copy {
+    @apply mt-4 max-w-xl text-base leading-7 text-stone-700;
+  }
+
+  .forecast-form {
+    @apply mt-8 grid gap-6;
+  }
+
+  .field-group {
+    @apply m-0 grid gap-3 border-0 p-0;
+  }
+
+  .field-group legend,
+  .input-label {
+    @apply mb-1 text-sm font-bold text-forest-900;
+  }
+
+  .location-option {
+    @apply grid cursor-pointer grid-cols-[1fr_auto] items-center gap-4 rounded-lg border border-stone-100 bg-stone-50 px-4 py-3 text-left transition hover:border-forest-500 hover:bg-forest-50;
+  }
+
+  .location-option strong {
+    @apply block text-base text-forest-900;
+  }
+
+  .location-option small {
+    @apply mt-1 block text-sm text-stone-700;
+  }
+
+  .location-option em {
+    @apply rounded-full bg-clay-50 px-3 py-1 text-sm not-italic text-clay-600;
+  }
+
+  .location-option-active {
+    @apply border-forest-700 bg-forest-50 ring-2 ring-forest-100;
+  }
+
+  .field-row {
+    @apply flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between;
+  }
+
+  .days-control {
+    @apply flex w-full items-center overflow-hidden rounded-lg border border-stone-100 bg-white sm:w-44;
+  }
+
+  .days-control input {
+    @apply min-w-0 flex-1 border-0 bg-transparent px-4 py-3 text-lg font-bold text-forest-900 outline-none;
+  }
+
+  .days-control span {
+    @apply border-l border-stone-100 bg-stone-50 px-4 py-3 text-sm font-semibold text-stone-700;
+  }
+
+  .primary-action {
+    @apply inline-flex min-h-12 items-center justify-center rounded-lg bg-clay-500 px-6 py-3 text-base font-bold text-white shadow-[0_14px_30px_rgba(228,111,69,0.28)] transition hover:bg-clay-600 focus:outline-none focus:ring-4 focus:ring-clay-100;
+  }
+
+  .secondary-action,
+  .back-link {
+    @apply inline-flex min-h-10 items-center justify-center rounded-lg border border-forest-100 bg-white px-4 py-2 text-sm font-bold text-forest-900 transition hover:border-forest-500 hover:bg-forest-50 focus:outline-none focus:ring-4 focus:ring-forest-100;
+  }
+
+  .back-link {
+    @apply mb-6 no-underline;
+  }
+
+  .summary-panel {
+    @apply mx-auto mt-5 w-full max-w-3xl rounded-lg border border-white/80 bg-forest-900 p-5 text-white shadow-[0_24px_80px_rgba(18,55,35,0.16)] sm:p-6 lg:mt-0 lg:max-w-none;
+  }
+
+  .summary-panel h2 {
+    @apply m-0 text-3xl font-bold;
+  }
+
+  .summary-panel dl {
+    @apply mt-6 grid gap-4;
+  }
+
+  .summary-panel div {
+    @apply rounded-lg border border-white/10 bg-white/5 p-4;
+  }
+
+  .summary-panel dt {
+    @apply text-xs font-bold uppercase tracking-[0.14em] text-forest-100;
+  }
+
+  .summary-panel dd {
+    @apply m-0 mt-1 text-lg font-semibold;
+  }
+
+  .forecast-preview,
+  .forecast-empty {
+    @apply mt-6 rounded-lg border p-4;
+  }
+
+  .forecast-preview {
+    @apply border-clay-500/35 bg-white/95 text-stone-900;
+  }
+
+  .forecast-preview-wide {
+    @apply m-0;
+  }
+
+  .forecast-empty {
+    @apply border-white/10 bg-white/5 text-forest-100;
+  }
+
+  .forecast-empty p {
+    @apply m-0 text-sm font-semibold;
+  }
+
+  .current-weather {
+    @apply flex items-center justify-between gap-4;
+  }
+
+  .current-weather strong {
+    @apply block text-5xl font-bold leading-none text-forest-900;
+  }
+
+  .current-weather span {
+    @apply mt-2 block text-base font-semibold text-stone-700;
+  }
+
+  .current-weather img {
+    @apply size-20 rounded-lg bg-forest-50 p-3;
+  }
+
+  .forecast-kicker {
+    @apply m-0 mb-2 text-xs font-bold uppercase tracking-[0.14em] text-clay-600;
+  }
+
+  .weather-metrics {
+    @apply mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-1;
+  }
+
+  .weather-metrics article,
+  .day-window div {
+    @apply rounded-lg border border-stone-100 bg-stone-50 p-3;
+  }
+
+  .weather-metrics span,
+  .day-window span,
+  .hourly-strip span {
+    @apply block text-xs font-bold uppercase tracking-[0.1em] text-stone-700;
+  }
+
+  .weather-metrics strong,
+  .day-window strong {
+    @apply mt-1 block text-lg font-bold text-forest-900;
+  }
+
+  .day-window {
+    @apply mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-1;
+  }
+
+  .hourly-strip {
+    @apply mt-5 grid auto-cols-[7rem] grid-flow-col gap-3 overflow-x-auto pb-2;
+  }
+
+  .hourly-strip article {
+    @apply rounded-lg border border-forest-100 bg-forest-50 p-3 text-center;
+  }
+
+  .hourly-strip time {
+    @apply text-sm font-bold text-forest-900;
+  }
+
+  .hourly-strip img {
+    @apply mx-auto my-2 size-10;
+  }
+
+  .hourly-strip strong {
+    @apply block text-2xl font-bold text-forest-900;
+  }
+
+  .hourly-strip span {
+    @apply mt-1 text-[0.65rem] text-clay-600;
+  }
+
+  .forecast-url {
+    @apply mt-4 block overflow-x-auto rounded-md bg-forest-900 p-3 text-sm text-clay-100;
+  }
+
+  .results-grid {
+    @apply mx-auto mt-8 grid w-full max-w-6xl gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)];
+  }
+
+  .day-window-panel,
+  .hourly-panel,
+  .loading-panel,
+  .error-panel {
+    @apply rounded-lg border border-forest-100 bg-white/85 p-5 shadow-[0_24px_80px_rgba(18,55,35,0.12)] backdrop-blur sm:p-6;
+  }
+
+  .hourly-panel {
+    @apply lg:col-span-2;
+  }
+
+  .loading-panel,
+  .error-panel {
+    @apply mx-auto mt-8 flex w-full max-w-3xl flex-col items-center justify-center gap-4 text-center;
+  }
+
+  .loading-panel p {
+    @apply m-0 text-base font-bold text-forest-900;
+  }
+
+  .loading-spinner {
+    @apply size-12 rounded-full border-4 border-forest-100 border-t-clay-500;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .error-panel h2 {
+    @apply m-0 text-2xl font-bold text-forest-900;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

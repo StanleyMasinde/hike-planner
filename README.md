@@ -1,6 +1,6 @@
-# hike-planner
+# Hike Planner
 
-This template should help get you started developing with Vue 3 in Vite.
+Vue 3 hike planner with a small Cloudflare Worker backend for WeatherAI forecast calls.
 
 ## Recommended IDE Setup
 
@@ -29,11 +29,47 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 pnpm install
 ```
 
-### Compile and Hot-Reload for Development
+Install the Worker dependencies too:
 
 ```sh
+cd backend
+pnpm install
+```
+
+## Local Development
+
+Run the Vue app and the Worker in separate terminals.
+
+Terminal 1: start Vite from the project root:
+
+```sh
+cd /Users/stanley/Work/hike-planner
 pnpm dev
 ```
+
+Vite will print the frontend URL, usually `http://localhost:5173`.
+
+Terminal 2: start the Cloudflare Worker from `backend`:
+
+```sh
+cd /Users/stanley/Work/hike-planner/backend
+cp .dev.vars.example .dev.vars
+pnpm dev
+```
+
+Before using the forecast endpoint, edit `backend/.dev.vars` and set:
+
+```sh
+WEATHER_AI_API_KEY=wai_your_key_here
+```
+
+Wrangler starts the Worker on `http://localhost:8787` by default. The local forecast endpoint is:
+
+```text
+http://localhost:8787/forecast?lat=-1.2921&lon=36.8219&days=1&ai=false
+```
+
+The Vue app should call the Worker URL in development instead of calling WeatherAI directly. The Worker forwards the request to WeatherAI with the secret API key server-side.
 
 ### Type-Check, Compile and Minify for Production
 
