@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 import {
   describeCondition,
+  formatDate,
   formatDateTime,
   formatHour,
   formatTime,
@@ -51,6 +52,10 @@ const currentCondition = computed(() =>
 
 const dailyForecast = computed(() => forecast.value?.daily[0]);
 
+const dailyForecasts = computed(() =>
+  forecast.value?.daily.slice(0, forecastDays.value) ?? [],
+);
+
 const formattedCurrentTime = computed(() =>
   forecast.value ? formatDateTime(forecast.value.current.time) : "",
 );
@@ -68,10 +73,18 @@ async function loadForecast() {
 
   try {
     const response = await fetch(apiUrl.value);
-    const data = await response.json();
+    const contentType = response.headers.get("Content-Type") || "";
+    const data = contentType.includes("application/json")
+      ? await response.json()
+      : await response.text();
 
     if (!response.ok) {
-      throw new Error(data?.error || "Unable to load the forecast.");
+      const apiError =
+        typeof data === "object" && data !== null && "error" in data
+          ? String(data.error)
+          : `Forecast API returned ${response.status}.`;
+
+      throw new Error(apiError);
     }
 
     forecast.value = data as ForecastResponse;
@@ -172,6 +185,40 @@ function readQueryValue(value: unknown) {
             <img :src="hour.icon" :alt="describeCondition(hour.condition_code)" />
             <strong>{{ Math.round(hour.temperature) }}°</strong>
             <span>{{ hour.precipitation_probability }}% rain</span>
+          </article>
+        </div>
+      </article>
+
+      <article v-if="dailyForecasts.length > 1" class="multi-day-panel">
+        <p class="summary-label">{{ forecastDays }} day outlook</p>
+        <div class="daily-grid">
+          <article v-for="day in dailyForecasts" :key="day.date" class="daily-card">
+            <div class="daily-card-header">
+              <div>
+                <time>{{ formatDate(day.date) }}</time>
+                <span>{{ describeCondition(day.condition_code) }}</span>
+              </div>
+              <img :src="day.icon" :alt="describeCondition(day.condition_code)" />
+            </div>
+
+            <dl>
+              <div>
+                <dt>Temp</dt>
+                <dd>{{ day.temp_min }}-{{ day.temp_max }}°C</dd>
+              </div>
+              <div>
+                <dt>Rain</dt>
+                <dd>{{ day.precipitation_probability }}%</dd>
+              </div>
+              <div>
+                <dt>Wind</dt>
+                <dd>{{ day.wind_max }} km/h</dd>
+              </div>
+              <div>
+                <dt>Sun</dt>
+                <dd>{{ formatTime(day.sunrise) }}-{{ formatTime(day.sunset) }}</dd>
+              </div>
+            </dl>
           </article>
         </div>
       </article>
