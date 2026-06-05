@@ -4,6 +4,7 @@ import type { LocationQuery } from "vue-router";
 
 import type { ForecastResponse } from "../lib/forecast";
 import { defaultLocation, hikeLocations, type HikeLocation } from "../lib/hikes";
+import { useAuthStore } from "./auth";
 
 export const useForecastStore = defineStore("forecast", () => {
   const selectedLocation = ref<HikeLocation>(defaultLocation);
@@ -48,12 +49,22 @@ export const useForecastStore = defineStore("forecast", () => {
   }
 
   async function loadForecast() {
+    const authStore = useAuthStore();
+
+    if (!authStore.authorizationHeader) {
+      errorMessage.value = "Sign in to load the forecast.";
+      authStore.requireLogin(errorMessage.value);
+      return;
+    }
+
     isLoading.value = true;
     errorMessage.value = "";
     forecast.value = null;
 
     try {
-      const response = await fetch(apiUrl.value);
+      const response = await fetch(apiUrl.value, {
+        headers: authStore.authHeaders(),
+      });
       const contentType = response.headers.get("Content-Type") || "";
       const data = contentType.includes("application/json")
         ? await response.json()
@@ -62,8 +73,12 @@ export const useForecastStore = defineStore("forecast", () => {
       if (!response.ok) {
         const apiError =
           typeof data === "object" && data !== null && "error" in data
-            ? String(data.error)
-            : `Forecast API returned ${response.status}.`;
+          ? String(data.error)
+          : `Forecast API returned ${response.status}.`;
+
+        if (response.status === 401) {
+          authStore.requireLogin(apiError);
+        }
 
         throw new Error(apiError);
       }

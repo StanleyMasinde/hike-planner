@@ -1,5 +1,6 @@
 const DEFAULT_ALLOWED_ORIGIN = "*";
 const DEFAULT_WEATHER_AI_BASE_URL = "https://api.weather-ai.co";
+const AUTH_REALM = "Hike Planner";
 
 export default {
   async fetch(request, env) {
@@ -11,12 +12,25 @@ export default {
 
     const url = new URL(request.url);
 
-    if (request.method !== "GET" || url.pathname !== "/forecast") {
+    if (url.pathname === "/auth/status" && request.method === "GET") {
+      return handleAuthStatus(request, env, origin);
+    }
+
+    if (url.pathname === "/auth/login" && request.method === "POST") {
+      return handleAuthLogin(request, env, origin);
+    }
+
+    if (url.pathname !== "/forecast" || request.method !== "GET") {
       return json(
         { error: "Not found. Use GET /forecast?lat=...&lon=..." },
         404,
         origin,
       );
+    }
+
+    const auth = authenticateBearerRequest(request, env);
+    if (!auth.ok) {
+      return unauthorized(auth.error, origin);
     }
 
     if (!env.WEATHER_AI_API_KEY) {
@@ -60,6 +74,135 @@ export default {
     return json(enrichForecastBody(upstreamBody.body), upstream.status, origin);
   },
 };
+
+function handleAuthStatus(request, env, origin) {
+  const authConfig = readAuthConfig(env);
+  if (authConfig.error) {
+    return json({ authenticated: false, error: authConfig.error }, 500, origin);
+  }
+
+  const auth = authenticateBearerRequest(request, env);
+
+  return json({ authenticated: auth.ok }, auth.ok ? 200 : 401, origin);
+}
+
+function handleAuthLogin(request, env, origin) {
+  const authConfig = readAuthConfig(env);
+  if (authConfig.error) {
+    return json({ error: authConfig.error }, 500, origin);
+  }
+
+  const credentials = readBasicCredentials(request.headers.get("Authorization"));
+  if (!credentials) {
+    return unauthorized("Basic credentials are required", origin);
+  }
+
+  if (
+    !constantTimeEqual(credentials.username, authConfig.username) ||
+    !constantTimeEqual(credentials.password, authConfig.password)
+  ) {
+    return unauthorized("Invalid username or password", origin);
+  }
+
+  return json(
+    {
+      authenticated: true,
+      token: encodeToken(credentials.username, credentials.password),
+    },
+    200,
+    origin,
+  );
+}
+
+function authenticateBearerRequest(request, env) {
+  const authConfig = readAuthConfig(env);
+  if (authConfig.error) {
+    return { ok: false, error: authConfig.error };
+  }
+
+  const token = readBearerToken(request.headers.get("Authorization"));
+  if (!token) {
+    return { ok: false, error: "Bearer token is required" };
+  }
+
+  const credentials = decodeToken(token);
+  if (!credentials) {
+    return { ok: false, error: "Invalid bearer token" };
+  }
+
+  if (
+    !constantTimeEqual(credentials.username, authConfig.username) ||
+    !constantTimeEqual(credentials.password, authConfig.password)
+  ) {
+    return { ok: false, error: "Invalid bearer token" };
+  }
+
+  return { ok: true };
+}
+
+function readAuthConfig(env) {
+  if (!env.HIKE_AUTH_USER || !env.HIKE_AUTH_PASSWORD) {
+    return { error: "HIKE_AUTH_USER and HIKE_AUTH_PASSWORD are required" };
+  }
+
+  return {
+    username: String(env.HIKE_AUTH_USER),
+    password: String(env.HIKE_AUTH_PASSWORD),
+  };
+}
+
+function readBasicCredentials(header) {
+  if (!header?.startsWith("Basic ")) {
+    return null;
+  }
+
+  return decodeToken(header.slice("Basic ".length));
+}
+
+function readBearerToken(header) {
+  if (!header?.startsWith("Bearer ")) {
+    return "";
+  }
+
+  return header.slice("Bearer ".length).trim();
+}
+
+function encodeToken(username, password) {
+  return btoa(`${username}:${password}`);
+}
+
+function decodeToken(token) {
+  let decoded;
+
+  try {
+    decoded = atob(token);
+  } catch {
+    return null;
+  }
+
+  const separatorIndex = decoded.indexOf(":");
+  if (separatorIndex === -1) {
+    return null;
+  }
+
+  return {
+    username: decoded.slice(0, separatorIndex),
+    password: decoded.slice(separatorIndex + 1),
+  };
+}
+
+function constantTimeEqual(left, right) {
+  const leftValue = String(left);
+  const rightValue = String(right);
+  let result = leftValue.length === rightValue.length ? 0 : 1;
+  const length = Math.max(leftValue.length, rightValue.length);
+
+  for (let index = 0; index < length; index += 1) {
+    result |= leftValue.charCodeAt(index) ^ rightValue.charCodeAt(index);
+  }
+
+  return result === 0;
+}
 
 function parseForecastParams(searchParams) {
   if (!searchParams.has("lat")) {
@@ -115,9 +258,20 @@ function json(body, status, origin) {
 function corsHeaders(origin) {
   return {
     "Access-Control-Allow-Origin": origin,
-    "Access-Control-Allow-Methods": "GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Authorization, Content-Type",
   };
+}
+
+function unauthorized(error, origin) {
+  return new Response(JSON.stringify({ error }), {
+    status: 401,
+    headers: {
+      "Content-Type": "application/json",
+      "WWW-Authenticate": `Basic realm="${AUTH_REALM}", charset="UTF-8"`,
+      ...corsHeaders(origin),
+    },
+  });
 }
 
 async function readUpstreamBody(response) {

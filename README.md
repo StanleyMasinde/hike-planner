@@ -44,10 +44,13 @@ pnpm dev
 ```
 
 Before using the forecast endpoint, configure the Worker with a WeatherAI API
-key. Create `backend/.dev.vars` if it does not already exist, then set:
+key and app access credentials. Create `backend/.dev.vars` if it does not
+already exist, then set:
 
 ```sh
 WEATHER_AI_API_KEY=wai_your_key_here
+HIKE_AUTH_USER=hiker
+HIKE_AUTH_PASSWORD=change_me
 ```
 
 Wrangler starts the Worker on `http://localhost:8787` by default. The local forecast endpoint is:
@@ -56,7 +59,9 @@ Wrangler starts the Worker on `http://localhost:8787` by default. The local fore
 http://localhost:8787/forecast?lat=-1.2921&lon=36.8219&days=1&ai=false
 ```
 
-The Vue app should call the Worker URL in development instead of calling WeatherAI directly. The Worker forwards the request to WeatherAI with the secret API key server-side.
+The Vue app should call the Worker URL in development instead of calling
+WeatherAI directly. The Worker forwards the request to WeatherAI with the secret
+API key server-side.
 
 ## Architecture Notes
 
@@ -86,6 +91,14 @@ The backend is a Cloudflare Worker in `backend/src/index.js`. It keeps the
 WeatherAI API key server-side, validates incoming forecast query parameters,
 calls WeatherAI, handles upstream errors, and enriches the forecast response
 with local gear recommendations before returning JSON to the Vue app.
+
+The Worker also protects app access with simple header-based authentication.
+The frontend submits `HIKE_AUTH_USER` and `HIKE_AUTH_PASSWORD` to
+`POST /auth/login` using HTTP Basic credentials. On success, the Worker returns
+a bearer token. The frontend stores that token locally and sends
+`Authorization: Bearer <token>` to `/auth/status` and `/forecast`. Cookies are
+not used, which keeps the setup simple when the frontend and Worker are hosted
+on different domains.
 
 ## Weather Data
 

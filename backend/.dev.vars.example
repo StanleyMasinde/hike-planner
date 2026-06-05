@@ -1,3 +1,5 @@
 WEATHER_AI_API_KEY=wai_your_key_here
+HIKE_AUTH_USER=hiker
+HIKE_AUTH_PASSWORD=change_me
 # Optional. Set this to your Vue app origin in production.
 # ALLOWED_ORIGIN=https://your-frontend.example.com

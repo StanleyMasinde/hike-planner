@@ -142,6 +142,10 @@
     @apply inline-flex min-h-12 items-center justify-center rounded-lg bg-clay-500 px-6 py-3 text-base font-bold text-white shadow-[0_14px_30px_rgba(228,111,69,0.28)] transition hover:bg-clay-600 focus:outline-none focus:ring-4 focus:ring-clay-100;
   }
 
+  .primary-action:disabled {
+    @apply cursor-not-allowed opacity-70;
+  }
+
   .secondary-action,
   .back-link {
     @apply inline-flex min-h-10 items-center justify-center rounded-lg border border-forest-100 bg-white px-4 py-2 text-sm font-bold text-forest-900 transition hover:border-forest-500 hover:bg-forest-50 focus:outline-none focus:ring-4 focus:ring-forest-100;
@@ -387,6 +391,42 @@
 
   .error-panel h2 {
     @apply m-0 text-2xl font-bold text-forest-900;
+  }
+
+  .auth-overlay {
+    @apply fixed inset-0 z-50 grid place-items-center bg-forest-900/70 px-5 py-6 backdrop-blur;
+  }
+
+  .auth-dialog {
+    @apply w-full max-w-md rounded-lg border border-forest-100 bg-white p-5 shadow-[0_24px_80px_rgba(18,55,35,0.28)] sm:p-6;
+  }
+
+  .auth-dialog h2 {
+    @apply m-0 text-2xl font-bold text-forest-900;
+  }
+
+  .auth-dialog p {
+    @apply mt-3 text-sm leading-6 text-stone-700;
+  }
+
+  .auth-dialog label {
+    @apply mt-4 block;
+  }
+
+  .auth-dialog label span {
+    @apply mb-2 block text-sm font-bold text-forest-900;
+  }
+
+  .auth-dialog input {
+    @apply min-h-12 w-full rounded-lg border border-stone-100 bg-stone-50 px-4 py-3 text-base text-forest-900 outline-none transition focus:border-forest-500 focus:bg-white focus:ring-4 focus:ring-forest-100;
+  }
+
+  .auth-dialog .primary-action {
+    @apply mt-5 w-full;
+  }
+
+  .auth-error {
+    @apply rounded-lg border border-clay-500/25 bg-clay-50 px-3 py-2 font-semibold text-clay-600;
   }
 }
 

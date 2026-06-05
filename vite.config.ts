@@ -10,6 +10,7 @@ export default defineConfig({
   plugins: [vue(), vueDevTools(), tailwindcss()],
   server: {
     proxy: {
+      "/auth": "http://localhost:8787",
       "/forecast": "http://localhost:8787",
     },
   },
