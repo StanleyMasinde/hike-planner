@@ -40,7 +40,6 @@ const apiUrl = computed(() => {
     lat: String(selectedLocation.value.lat),
     lon: String(selectedLocation.value.lon),
     days: String(forecastDays.value),
-    ai: "false",
   });
 
   return `/forecast?${params.toString()}`;

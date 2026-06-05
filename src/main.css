@@ -260,13 +260,55 @@
 
   .day-window-panel,
   .hourly-panel,
+  .multi-day-panel,
   .loading-panel,
   .error-panel {
     @apply rounded-lg border border-forest-100 bg-white/85 p-5 shadow-[0_24px_80px_rgba(18,55,35,0.12)] backdrop-blur sm:p-6;
   }
 
-  .hourly-panel {
+  .hourly-panel,
+  .multi-day-panel {
     @apply lg:col-span-2;
+  }
+
+  .daily-grid {
+    @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-4;
+  }
+
+  .daily-card {
+    @apply rounded-lg border border-forest-100 bg-forest-50 p-4;
+  }
+
+  .daily-card-header {
+    @apply flex items-start justify-between gap-3;
+  }
+
+  .daily-card-header time {
+    @apply block text-lg font-bold text-forest-900;
+  }
+
+  .daily-card-header span {
+    @apply mt-1 block text-sm font-semibold text-stone-700;
+  }
+
+  .daily-card-header img {
+    @apply size-12 rounded-lg bg-white p-2;
+  }
+
+  .daily-card dl {
+    @apply mt-4 grid grid-cols-2 gap-3;
+  }
+
+  .daily-card div {
+    @apply min-w-0;
+  }
+
+  .daily-card dt {
+    @apply text-xs font-bold uppercase tracking-[0.1em] text-clay-600;
+  }
+
+  .daily-card dd {
+    @apply m-0 mt-1 text-sm font-bold text-forest-900;
   }
 
   .loading-panel,
