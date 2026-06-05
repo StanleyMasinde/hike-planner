@@ -22,7 +22,7 @@ export const hikeLocations = [
     lon: 36.4569,
   },
   {
-    name: "Elephant Hills",
+    name: "Elephant Hill",
     area: "Aberdare Range",
     altitude: "3,650 m",
     lat: -0.6613,
