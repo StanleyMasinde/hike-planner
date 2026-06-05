@@ -31,6 +31,14 @@ export type ForecastResponse = {
     precipitation_probability: number;
     wind_max: number;
   }>;
+  gearRecommendations?: GearRecommendation[];
+};
+
+export type GearRecommendation = {
+  id: string;
+  item: string;
+  priority: "essential" | "recommended" | string;
+  reason: string;
 };
 
 export function describeCondition(code: string) {

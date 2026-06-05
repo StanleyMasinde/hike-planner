@@ -1,11 +1,20 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from "vitest";
 
-import { mount } from '@vue/test-utils'
-import App from '../App.vue'
+import { mount } from "@vue/test-utils";
+import App from "../App.vue";
+import router from "../router";
 
-describe('App', () => {
-  it('mounts renders properly', () => {
-    const wrapper = mount(App)
-    expect(wrapper.text()).toContain('You did it!')
-  })
-})
+describe("App", () => {
+  it("renders the hike planner route", async () => {
+    router.push("/");
+    await router.isReady();
+
+    const wrapper = mount(App, {
+      global: {
+        plugins: [router],
+      },
+    });
+
+    expect(wrapper.text()).toContain("Trail weather");
+  });
+});

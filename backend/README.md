@@ -35,6 +35,16 @@ The Worker validates `lat`, `lon`, `days`, and `ai`, then calls:
 https://api.weather-ai.co/v1/forecast
 ```
 
+The upstream request always sends `ai=false`. The Worker appends local,
+rule-based gear suggestions to successful forecast responses:
+
+```js
+forecast.gearRecommendations // [{ id, item, priority, reason }]
+```
+
+Rules cover basics like water, snacks, rain layers, footwear for slippery or
+rough terrain, sun protection, warm layers, wind, visibility, and first aid.
+
 Frontend example:
 
 ```js

@@ -8,6 +8,7 @@ import {
   formatHour,
   formatTime,
   type ForecastResponse,
+  type GearRecommendation,
 } from "../lib/forecast";
 import { defaultLocation, hikeLocations, type HikeLocation } from "../lib/hikes";
 
@@ -62,6 +63,10 @@ const formattedCurrentTime = computed(() =>
 
 const visibleHourly = computed(() => forecast.value?.hourly.slice(0, 12) ?? []);
 
+const gearRecommendations = computed(
+  () => forecast.value?.gearRecommendations ?? [],
+);
+
 onMounted(() => {
   loadForecast();
 });
@@ -98,6 +103,16 @@ async function loadForecast() {
 
 function readQueryValue(value: unknown) {
   return Array.isArray(value) ? String(value[0] ?? "") : String(value ?? "");
+}
+
+function recommendationPriorityClass(recommendation: GearRecommendation) {
+  return recommendation.priority === "essential"
+    ? "recommendation-priority-essential"
+    : "recommendation-priority-recommended";
+}
+
+function formatPriority(priority: GearRecommendation["priority"]) {
+  return priority.charAt(0).toUpperCase() + priority.slice(1);
 }
 </script>
 
@@ -174,6 +189,32 @@ function readQueryValue(value: unknown) {
             <span>Max wind</span>
             <strong>{{ dailyForecast.wind_max }} km/h</strong>
           </div>
+        </div>
+      </article>
+
+      <article v-if="gearRecommendations.length" class="recommendations-panel">
+        <div class="panel-heading-row">
+          <div>
+            <p class="summary-label">Outfit and gear</p>
+            <h2>Pack for the forecast</h2>
+          </div>
+          <span>{{ gearRecommendations.length }} items</span>
+        </div>
+
+        <div class="recommendation-grid">
+          <article
+            v-for="recommendation in gearRecommendations"
+            :key="recommendation.id"
+            class="recommendation-card"
+          >
+            <div class="recommendation-card-header">
+              <strong>{{ recommendation.item }}</strong>
+              <span :class="recommendationPriorityClass(recommendation)">
+                {{ formatPriority(recommendation.priority) }}
+              </span>
+            </div>
+            <p>{{ recommendation.reason }}</p>
+          </article>
         </div>
       </article>
 

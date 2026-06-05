@@ -261,14 +261,60 @@
   .day-window-panel,
   .hourly-panel,
   .multi-day-panel,
+  .recommendations-panel,
   .loading-panel,
   .error-panel {
     @apply rounded-lg border border-forest-100 bg-white/85 p-5 shadow-[0_24px_80px_rgba(18,55,35,0.12)] backdrop-blur sm:p-6;
   }
 
   .hourly-panel,
-  .multi-day-panel {
+  .multi-day-panel,
+  .recommendations-panel {
     @apply lg:col-span-2;
+  }
+
+  .panel-heading-row {
+    @apply flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between;
+  }
+
+  .panel-heading-row h2 {
+    @apply m-0 text-2xl font-bold text-forest-900;
+  }
+
+  .panel-heading-row > span {
+    @apply inline-flex min-h-10 items-center justify-center rounded-lg border border-clay-500/25 bg-clay-50 px-3 py-2 text-sm font-bold text-clay-600;
+  }
+
+  .recommendation-grid {
+    @apply mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3;
+  }
+
+  .recommendation-card {
+    @apply rounded-lg border border-forest-100 bg-forest-50 p-4;
+  }
+
+  .recommendation-card-header {
+    @apply flex items-start justify-between gap-3;
+  }
+
+  .recommendation-card-header strong {
+    @apply min-w-0 text-base font-bold text-forest-900;
+  }
+
+  .recommendation-card-header span {
+    @apply shrink-0 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.1em];
+  }
+
+  .recommendation-priority-essential {
+    @apply bg-clay-100 text-clay-600;
+  }
+
+  .recommendation-priority-recommended {
+    @apply bg-white text-forest-700;
+  }
+
+  .recommendation-card p {
+    @apply m-0 mt-3 text-sm leading-6 text-stone-700;
   }
 
   .daily-grid {
