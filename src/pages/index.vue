@@ -1,39 +1,24 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
-import { defaultLocation, hikeLocations, type HikeLocation } from "../lib/hikes";
+
+import { usePlannerStore } from "../stores/planner";
 
 const router = useRouter();
-const selectedLocationName = ref(defaultLocation.name);
-const forecastDays = ref(3);
-
-const selectedLocation = computed<HikeLocation>(
-  () =>
-    hikeLocations.find((location) => location.name === selectedLocationName.value) ??
-    defaultLocation,
-);
-
-const forecastUrl = computed(() => {
-  const params = new URLSearchParams({
-    lat: String(selectedLocation.value.lat),
-    lon: String(selectedLocation.value.lon),
-    days: String(forecastDays.value),
-  });
-
-  return `/forecast?${params.toString()}`;
-});
+const plannerStore = usePlannerStore();
+const {
+  selectedLocationName,
+  forecastDays,
+  hikeLocations,
+  selectedLocation,
+  forecastUrl,
+  forecastQuery,
+} = storeToRefs(plannerStore);
 
 function requestForecast() {
   router.push({
     path: "/results",
-    query: {
-      location: selectedLocation.value.name,
-      area: selectedLocation.value.area,
-      altitude: selectedLocation.value.altitude,
-      lat: String(selectedLocation.value.lat),
-      lon: String(selectedLocation.value.lon),
-      days: String(forecastDays.value),
-    },
+    query: forecastQuery.value,
   });
 }
 </script>
@@ -54,25 +39,27 @@ function requestForecast() {
         <fieldset class="field-group">
           <legend>Hike location</legend>
 
-          <label
-            v-for="location in hikeLocations"
-            :key="location.name"
-            class="location-option"
-            :class="{ 'location-option-active': selectedLocationName === location.name }"
-          >
-            <input
-              v-model="selectedLocationName"
-              class="sr-only"
-              type="radio"
-              name="location"
-              :value="location.name"
-            />
-            <span>
-              <strong>{{ location.name }}</strong>
-              <small>{{ location.area }}</small>
-            </span>
-            <em>{{ location.altitude }}</em>
-          </label>
+          <div class="location-list">
+            <label
+              v-for="location in hikeLocations"
+              :key="location.name"
+              class="location-option"
+              :class="{ 'location-option-active': selectedLocationName === location.name }"
+            >
+              <input
+                v-model="selectedLocationName"
+                class="location-radio"
+                type="radio"
+                name="location"
+                :value="location.name"
+              />
+              <span>
+                <strong>{{ location.name }}</strong>
+                <small>{{ location.area }}</small>
+              </span>
+              <em>{{ location.altitude }}</em>
+            </label>
+          </div>
         </fieldset>
 
         <div class="field-row">

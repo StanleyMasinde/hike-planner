@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { RouterLink, useRoute } from "vue-router";
 import {
   describeCondition,
@@ -7,102 +8,48 @@ import {
   formatDateTime,
   formatHour,
   formatTime,
-  type ForecastResponse,
   type GearRecommendation,
 } from "../lib/forecast";
-import { defaultLocation, hikeLocations, type HikeLocation } from "../lib/hikes";
+import { useForecastStore } from "../stores/forecast";
 
 const route = useRoute();
-const forecast = ref<ForecastResponse | null>(null);
-const isLoading = ref(true);
-const errorMessage = ref("");
-
-const selectedLocation = computed<HikeLocation>(() => {
-  const locationName = readQueryValue(route.query.location);
-
-  return (
-    hikeLocations.find((location) => location.name === locationName) ?? {
-      name: locationName || defaultLocation.name,
-      area: readQueryValue(route.query.area) || defaultLocation.area,
-      altitude: readQueryValue(route.query.altitude) || defaultLocation.altitude,
-      lat: Number(readQueryValue(route.query.lat)) || defaultLocation.lat,
-      lon: Number(readQueryValue(route.query.lon)) || defaultLocation.lon,
-    }
-  );
-});
-
-const forecastDays = computed(() => {
-  const days = Number(readQueryValue(route.query.days));
-
-  return Number.isInteger(days) && days >= 1 && days <= 7 ? days : 1;
-});
-
-const apiUrl = computed(() => {
-  const params = new URLSearchParams({
-    lat: String(selectedLocation.value.lat),
-    lon: String(selectedLocation.value.lon),
-    days: String(forecastDays.value),
-  });
-
-  return `/forecast?${params.toString()}`;
-});
+const forecastStore = useForecastStore();
+const {
+  selectedLocation,
+  forecastDays,
+  forecast,
+  isLoading,
+  errorMessage,
+  dailyForecast,
+  dailyForecasts,
+  visibleHourly,
+  gearRecommendations,
+} = storeToRefs(forecastStore);
 
 const currentCondition = computed(() =>
   forecast.value ? describeCondition(forecast.value.current.condition_code) : "",
-);
-
-const dailyForecast = computed(() => forecast.value?.daily[0]);
-
-const dailyForecasts = computed(() =>
-  forecast.value?.daily.slice(0, forecastDays.value) ?? [],
 );
 
 const formattedCurrentTime = computed(() =>
   forecast.value ? formatDateTime(forecast.value.current.time) : "",
 );
 
-const visibleHourly = computed(() => forecast.value?.hourly.slice(0, 12) ?? []);
-
-const gearRecommendations = computed(
-  () => forecast.value?.gearRecommendations ?? [],
-);
-
 onMounted(() => {
-  loadForecast();
+  forecastStore.hydrateFromQuery(route.query);
+  forecastStore.loadForecast();
 });
 
-async function loadForecast() {
-  isLoading.value = true;
-  errorMessage.value = "";
-  forecast.value = null;
+watch(
+  () => route.query,
+  (query) => {
+    forecastStore.hydrateFromQuery(query);
+    forecastStore.loadForecast();
+  },
+  { deep: true },
+);
 
-  try {
-    const response = await fetch(apiUrl.value);
-    const contentType = response.headers.get("Content-Type") || "";
-    const data = contentType.includes("application/json")
-      ? await response.json()
-      : await response.text();
-
-    if (!response.ok) {
-      const apiError =
-        typeof data === "object" && data !== null && "error" in data
-          ? String(data.error)
-          : `Forecast API returned ${response.status}.`;
-
-      throw new Error(apiError);
-    }
-
-    forecast.value = data as ForecastResponse;
-  } catch (error) {
-    errorMessage.value =
-      error instanceof Error ? error.message : "Unable to load the forecast.";
-  } finally {
-    isLoading.value = false;
-  }
-}
-
-function readQueryValue(value: unknown) {
-  return Array.isArray(value) ? String(value[0] ?? "") : String(value ?? "");
+function loadForecast() {
+  forecastStore.loadForecast();
 }
 
 function recommendationPriorityClass(recommendation: GearRecommendation) {

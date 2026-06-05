@@ -39,11 +39,11 @@
 
 @layer components {
   .app-shell {
-    @apply min-h-screen bg-[radial-gradient(circle_at_top_left,#d7efde,transparent_30%),linear-gradient(135deg,#f8f7f2_0%,#eef8f1_48%,#fff3ed_100%)] px-5 py-6 text-stone-900 sm:px-8 lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:items-center lg:gap-8 lg:px-12;
+    @apply min-h-screen bg-[radial-gradient(circle_at_top_left,#d7efde,transparent_30%),linear-gradient(135deg,#f8f7f2_0%,#eef8f1_48%,#fff3ed_100%)] px-5 py-6 text-stone-900 sm:px-8 lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:gap-8 lg:px-12;
   }
 
   .results-shell {
-    @apply min-h-screen bg-[radial-gradient(circle_at_top_left,#d7efde,transparent_30%),linear-gradient(135deg,#f8f7f2_0%,#eef8f1_48%,#fff3ed_100%)] px-5 py-6 text-stone-900 sm:px-8 lg:px-12;
+    @apply min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top_left,#d7efde,transparent_30%),linear-gradient(135deg,#f8f7f2_0%,#eef8f1_48%,#fff3ed_100%)] px-5 py-6 text-stone-900 sm:px-8 lg:px-12;
   }
 
   .results-header {
@@ -55,11 +55,11 @@
   }
 
   .planner-panel {
-    @apply mx-auto w-full max-w-3xl rounded-lg border border-forest-100 bg-white/85 p-5 shadow-[0_24px_80px_rgba(18,55,35,0.12)] backdrop-blur sm:p-8;
+    @apply mx-auto flex max-h-[calc(100dvh-3rem)] w-full max-w-3xl flex-col overflow-hidden rounded-lg border border-forest-100 bg-white/85 p-5 shadow-[0_24px_80px_rgba(18,55,35,0.12)] backdrop-blur sm:p-8;
   }
 
   .intro-block {
-    @apply max-w-2xl;
+    @apply max-w-2xl shrink-0;
   }
 
   .eyebrow,
@@ -76,11 +76,11 @@
   }
 
   .forecast-form {
-    @apply mt-8 grid gap-6;
+    @apply mt-8 grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_auto_auto] gap-6;
   }
 
   .field-group {
-    @apply m-0 grid gap-3 border-0 p-0;
+    @apply m-0 grid min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-3 border-0 p-0;
   }
 
   .field-group legend,
@@ -88,12 +88,26 @@
     @apply mb-1 text-sm font-bold text-forest-900;
   }
 
+  .location-list {
+    @apply grid min-h-0 gap-3 overflow-y-auto pr-2;
+    scrollbar-gutter: stable;
+  }
+
   .location-option {
-    @apply grid cursor-pointer grid-cols-[1fr_auto] items-center gap-4 rounded-lg border border-stone-100 bg-stone-50 px-4 py-3 text-left transition hover:border-forest-500 hover:bg-forest-50;
+    @apply relative grid min-h-[4.5rem] cursor-pointer grid-cols-[minmax(0,1fr)_auto] items-center gap-4 rounded-lg border border-stone-100 bg-stone-50 px-4 py-3 text-left transition hover:border-forest-500 hover:bg-forest-50;
+  }
+
+  .location-radio {
+    @apply absolute inset-0 cursor-pointer opacity-0;
+  }
+
+  .location-option span,
+  .location-option em {
+    @apply pointer-events-none;
   }
 
   .location-option strong {
-    @apply block text-base text-forest-900;
+    @apply block break-words text-base text-forest-900;
   }
 
   .location-option small {
@@ -138,7 +152,7 @@
   }
 
   .summary-panel {
-    @apply mx-auto mt-5 w-full max-w-3xl rounded-lg border border-white/80 bg-forest-900 p-5 text-white shadow-[0_24px_80px_rgba(18,55,35,0.16)] sm:p-6 lg:mt-0 lg:max-w-none;
+    @apply mx-auto mt-5 w-full max-w-3xl rounded-lg border border-white/80 bg-forest-900 p-5 text-white shadow-[0_24px_80px_rgba(18,55,35,0.16)] sm:p-6 lg:sticky lg:top-6 lg:mt-0 lg:max-w-none;
   }
 
   .summary-panel h2 {
@@ -163,7 +177,7 @@
 
   .forecast-preview,
   .forecast-empty {
-    @apply mt-6 rounded-lg border p-4;
+    @apply mt-6 min-w-0 rounded-lg border p-4;
   }
 
   .forecast-preview {
@@ -183,7 +197,7 @@
   }
 
   .current-weather {
-    @apply flex items-center justify-between gap-4;
+    @apply flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between;
   }
 
   .current-weather strong {
@@ -227,7 +241,7 @@
   }
 
   .hourly-strip {
-    @apply mt-5 grid auto-cols-[7rem] grid-flow-col gap-3 overflow-x-auto pb-2;
+    @apply mt-5 grid min-w-0 auto-cols-[7rem] grid-flow-col gap-3 overflow-x-auto pb-2;
   }
 
   .hourly-strip article {
@@ -255,7 +269,7 @@
   }
 
   .results-grid {
-    @apply mx-auto mt-8 grid w-full max-w-6xl gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)];
+    @apply mx-auto mt-8 grid w-full max-w-6xl grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)];
   }
 
   .day-window-panel,
@@ -264,7 +278,7 @@
   .recommendations-panel,
   .loading-panel,
   .error-panel {
-    @apply rounded-lg border border-forest-100 bg-white/85 p-5 shadow-[0_24px_80px_rgba(18,55,35,0.12)] backdrop-blur sm:p-6;
+    @apply min-w-0 rounded-lg border border-forest-100 bg-white/85 p-5 shadow-[0_24px_80px_rgba(18,55,35,0.12)] backdrop-blur sm:p-6;
   }
 
   .hourly-panel,
@@ -274,7 +288,7 @@
   }
 
   .panel-heading-row {
-    @apply flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between;
+    @apply flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between;
   }
 
   .panel-heading-row h2 {
@@ -294,7 +308,7 @@
   }
 
   .recommendation-card-header {
-    @apply flex items-start justify-between gap-3;
+    @apply flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between;
   }
 
   .recommendation-card-header strong {
@@ -326,7 +340,7 @@
   }
 
   .daily-card-header {
-    @apply flex items-start justify-between gap-3;
+    @apply flex min-w-0 items-start justify-between gap-3;
   }
 
   .daily-card-header time {
@@ -354,7 +368,7 @@
   }
 
   .daily-card dd {
-    @apply m-0 mt-1 text-sm font-bold text-forest-900;
+    @apply m-0 mt-1 break-words text-sm font-bold text-forest-900;
   }
 
   .loading-panel,
