@@ -1,7 +1,12 @@
 {
   "name": "hike-planner-weather-worker",
+  "version": "1.0.0",
   "private": true,
+  "description": "Minimal Cloudflare Worker that protects the Hike Planner app and proxies forecast requests from the Vue app to WeatherAI without exposing `WEATHER_AI_API_KEY` in the browser.",
+  "license": "ISC",
+  "author": "",
   "type": "module",
+  "main": "index.js",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy"
