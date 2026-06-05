@@ -23,13 +23,9 @@ pnpm install
 
 ## Local Development
 
-The frontend calls `/forecast`, and Vite proxies that path to the local Worker
-at `http://localhost:8787`. Run the Vue app and the Worker in separate
-terminals.
-
-By default, the proxy target is `http://localhost:8787`. You can configure this
-using the `VITE_BACKEND_URL` environment variable if your backend is running
-elsewhere (e.g., a deployed production environment).
+The frontend calls the backend API directly. By default, it expects the backend
+at `http://localhost:8787`. You can configure this using the
+`VITE_BACKEND_URL` environment variable.
 
 Terminal 1: start Vite from the project root:
 
@@ -108,8 +104,8 @@ on different domains.
 
 Weather information is provided by [WeatherAI](https://weather-ai.co/). The
 Worker calls WeatherAI's forecast API from the server side so the API key is not
-exposed in the browser. In local development, the frontend uses the Vite proxy
-for `/forecast`; in production, route `/forecast` to the deployed Worker.
+exposed in the browser. The frontend calls the Worker directly using the URL
+configured in `VITE_BACKEND_URL`.
 
 The Worker currently requests forecasts with `ai=false` and enriches the raw
 forecast response with local gear recommendations before returning it to the UI.

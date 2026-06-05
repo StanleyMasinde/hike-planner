@@ -26,7 +26,8 @@ export const usePlannerStore = defineStore("planner", () => {
       days: String(forecastDays.value),
     });
 
-    return `/forecast?${params.toString()}`;
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8787";
+    return `${backendUrl}/forecast?${params.toString()}`;
   });
 
   const forecastQuery = computed(() => ({

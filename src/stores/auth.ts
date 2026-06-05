@@ -22,7 +22,8 @@ export const useAuthStore = defineStore("auth", () => {
     errorMessage.value = "";
 
     try {
-      const response = await fetch("/auth/status", {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8787";
+      const response = await fetch(`${backendUrl}/auth/status`, {
         headers: authHeaders(),
       });
 
@@ -46,7 +47,8 @@ export const useAuthStore = defineStore("auth", () => {
     errorMessage.value = "";
 
     try {
-      const response = await fetch("/auth/login", {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8787";
+      const response = await fetch(`${backendUrl}/auth/login`, {
         method: "POST",
         headers: {
           Authorization: `Basic ${btoa(`${username.value}:${password.value}`)}`,

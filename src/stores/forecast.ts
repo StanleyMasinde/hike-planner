@@ -20,7 +20,8 @@ export const useForecastStore = defineStore("forecast", () => {
       days: String(forecastDays.value),
     });
 
-    return `/forecast?${params.toString()}`;
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8787";
+    return `${backendUrl}/forecast?${params.toString()}`;
   });
 
   const dailyForecast = computed(() => forecast.value?.daily[0]);
