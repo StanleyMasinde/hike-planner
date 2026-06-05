@@ -58,6 +58,35 @@ http://localhost:8787/forecast?lat=-1.2921&lon=36.8219&days=1&ai=false
 
 The Vue app should call the Worker URL in development instead of calling WeatherAI directly. The Worker forwards the request to WeatherAI with the secret API key server-side.
 
+## Architecture Notes
+
+The frontend is built with Vue 3. Vue handles the reactive UI updates for route
+selection, forecast loading states, weather results, and gear recommendations.
+The app uses Vue Router for the index and results pages.
+
+Pinia is used for centralized state management:
+
+- `src/stores/planner.ts` owns the selected hike, forecast day count, generated
+  forecast URL, and route query payload.
+- `src/stores/forecast.ts` owns the selected forecast location, loading and
+  error state, fetched forecast data, hourly/daily derived values, and gear
+  recommendations.
+
+Keeping this state in stores makes the UI easier to refactor because page
+components mostly bind to store state and call store actions instead of owning
+fetching, parsing, and cross-page state directly.
+
+Styling is managed in `src/main.css` with Tailwind CSS. The project uses
+Tailwind's `@theme` block for shared design tokens such as forest, clay, and
+stone colors, then uses component classes with `@apply` in `@layer components`.
+This keeps templates readable while still using Tailwind utilities for spacing,
+layout, borders, typography, responsive behavior, and interaction states.
+
+The backend is a Cloudflare Worker in `backend/src/index.js`. It keeps the
+WeatherAI API key server-side, validates incoming forecast query parameters,
+calls WeatherAI, handles upstream errors, and enriches the forecast response
+with local gear recommendations before returning JSON to the Vue app.
+
 ## Weather Data
 
 Weather information is provided by [WeatherAI](https://weather-ai.co/). The
