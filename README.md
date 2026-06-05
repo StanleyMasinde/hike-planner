@@ -27,6 +27,10 @@ The frontend calls `/forecast`, and Vite proxies that path to the local Worker
 at `http://localhost:8787`. Run the Vue app and the Worker in separate
 terminals.
 
+By default, the proxy target is `http://localhost:8787`. You can configure this
+using the `VITE_BACKEND_URL` environment variable if your backend is running
+elsewhere (e.g., a deployed production environment).
+
 Terminal 1: start Vite from the project root:
 
 ```sh
