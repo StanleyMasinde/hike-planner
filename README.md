@@ -34,7 +34,7 @@ elsewhere (e.g., a deployed production environment).
 Terminal 1: start Vite from the project root:
 
 ```sh
-cd /Users/stanley/Work/hike-planner
+cd ~/<your-work-dir>/hike-planner
 pnpm dev
 ```
 
@@ -43,7 +43,7 @@ Vite will print the frontend URL, usually `http://localhost:5173`.
 Terminal 2: start the Cloudflare Worker from `backend`:
 
 ```sh
-cd /Users/stanley/Work/hike-planner/backend
+cd ~/<your-work-dir>/hike-planner/backend
 pnpm dev
 ```
 
