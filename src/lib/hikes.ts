@@ -35,6 +35,34 @@ export const hikeLocations = [
     lat: -1.0951,
     lon: 37.3362,
   },
+  {
+    name: "Karura Forest",
+    area: "Nairobi County",
+    altitude: "1,712 m",
+    lat: -1.25,
+    lon: 36.8333,
+  },
+  {
+    name: "Rurimeria",
+    area: "Aberdare Range",
+    altitude: "3,860 m",
+    lat: -0.3747,
+    lon: 36.6233,
+  },
+  {
+    name: "Table Mountain",
+    area: "Aberdare Range",
+    altitude: "3,792 m",
+    lat: -0.5632,
+    lon: 36.5754,
+  },
+  {
+    name: "Mount Kenya (Point Lenana via Sirimon)",
+    area: "Meru/Nanyuki",
+    altitude: "4,985 m",
+    lat: -0.1522,
+    lon: 37.3081,
+  },
 ] satisfies [HikeLocation, ...HikeLocation[]];
 
 export const defaultLocation = hikeLocations[0];
