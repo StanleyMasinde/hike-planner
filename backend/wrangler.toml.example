@@ -4,5 +4,6 @@ compatibility_date = "2026-06-05"
 
 [vars]
 WEATHER_AI_BASE_URL = "https://api.weather-ai.co"
-HIKE_AUTH_USER= "hiker"
-HIKE_AUTH_PASSWORD= "superduperhiker"
+HIKE_AUTH_USER= "username"
+HIKE_AUTH_PASSWORD= "change_me"
+WEATHER_AI_API_KEY= "your-api-key"
